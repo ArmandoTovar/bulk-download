@@ -1,4 +1,4 @@
-package tovar.domain.model;
+package tovar.domain.model.event;
 
 import java.time.LocalDateTime;
 

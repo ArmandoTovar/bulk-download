@@ -1,9 +1,9 @@
 package tovar.domain.service;
 
-import tovar.domain.model.base.Report;
 import tovar.domain.model.download.Download;
 import tovar.domain.model.event.DomainEventPublisher;
 import tovar.domain.model.event.GeneratedReportEvent;
+import tovar.domain.model.report.Report;
 
 public class ReportGeneratorDomainService {
   private final DomainEventPublisher eventPublisher;

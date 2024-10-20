@@ -1,22 +1,23 @@
 package tovar.domain.repository;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import tovar.domain.model.base.BaseEntity;
 
 public interface IGenericRepository<T extends BaseEntity<K>, K> {
 
-  Optional<T> findById(K id);
+  Uni<Optional<T>> getById(K id);
 
-  Iterator<T> findAll();
+  Uni<List<T>> getAll();
 
-  T save(T report);
+  Uni<T> save(T report);
 
-  T update(T report);
+  Uni<T> update(T report);
 
-  void delete(K id);
+  Uni<Void> remove(K id);
 
-  void deleteAll(List<T> entities);
+  Uni<Void> removeAll(List<T> entities);
 }

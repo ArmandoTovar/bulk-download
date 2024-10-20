@@ -1,17 +1,22 @@
 package tovar.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import tovar.domain.model.base.BaseEntity;
 
 public interface IGenericCrudService<T extends BaseEntity<K>, K> {
-  T getById(K id);
+  Uni<Optional<T>> getById(K id);
 
-  T create(T entity);
+  Uni<List<T>> getAll();
 
-  T update(T entity);
+  Uni<T> create(T entity);
 
-  boolean delete(K id);
+  Uni<T> update(T entity);
 
-  boolean deleteAll(List<T> entities);
+  Uni<Void> delete(K id);
+
+  Uni<Void> deleteAll(List<T> entities);
 }

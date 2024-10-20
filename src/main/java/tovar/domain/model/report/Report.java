@@ -1,16 +1,18 @@
-package tovar.domain.model.base;
+package tovar.domain.model.report;
 
 import java.util.UUID;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import tovar.domain.model.report.FrecuencyType;
-import tovar.domain.model.report.ReportFormat;
-import tovar.domain.model.report.ReportState;
-import tovar.domain.model.report.ReportConfiguration;
+import lombok.experimental.SuperBuilder;
+import tovar.domain.model.base.AuditableEntity;
+import tovar.domain.model.base.Tenant;
+import tovar.domain.model.base.User;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @Builder
 public class Report extends AuditableEntity<UUID> {
   private String name;

@@ -1,5 +1,7 @@
 package tovar.domain.model.report;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import lombok.Builder;
@@ -22,4 +24,10 @@ public class Report extends AuditableEntity<UUID> {
   private Tenant tenant;
   private ReportState reportState;
   private ReportConfiguration ReportConfiguration;
+  private LocalDateTime lastDownload;
+
+  public String generatedfileName() {
+    return String.format("%s-%s-%s-%s.%s", tenant.getName(), user.getName(), frecuencyType.toString(),
+        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyymmdd-hhmmss")), reportFormat).replaceAll(" ", "-");
+  }
 }

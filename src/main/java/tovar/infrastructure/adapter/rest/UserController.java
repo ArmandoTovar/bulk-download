@@ -4,7 +4,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import tovar.domain.model.base.User;
-import tovar.infrastructure.adapter.persistence.BaseServiceImpl;
+import tovar.domain.service.IGenericCrudService;
 import tovar.infrastructure.adapter.persistence.UserService;
 
 import java.util.UUID;
@@ -21,7 +21,8 @@ public class UserController extends BaseController<User, UUID> {
   private UserService userService;
 
   @Override
-  protected BaseServiceImpl<User, ?, UUID> getService() {
+  protected IGenericCrudService<User, UUID> getService() {
     return userService;
   }
+
 }

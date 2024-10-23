@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseEntity<UUID> {
+
   private String name;
   private String email;
   private Tenant tenant;

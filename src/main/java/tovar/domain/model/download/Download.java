@@ -1,6 +1,7 @@
 package tovar.domain.model.download;
 
 import java.util.UUID;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

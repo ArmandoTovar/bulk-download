@@ -17,4 +17,5 @@ public class TenantService extends BaseServiceImpl<Tenant, TenantEntity, Long> {
   protected BaseRepositoryImpl<Tenant, TenantEntity, Long> getRepository() {
     return tenantRepository;
   }
+
 }

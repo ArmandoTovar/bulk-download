@@ -3,7 +3,6 @@ package tovar.infrastructure.persistent.repositories;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
 import io.smallrye.mutiny.Uni;
-import jakarta.enterprise.context.ApplicationScoped;
 import tovar.domain.model.base.BaseEntity;
 import tovar.domain.repository.IGenericRepository;
 

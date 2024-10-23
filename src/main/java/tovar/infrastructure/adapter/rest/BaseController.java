@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import tovar.domain.model.base.BaseEntity;
+import tovar.domain.service.IGenericCrudService;
 import tovar.infrastructure.adapter.persistence.BaseServiceImpl;
 
 import java.util.List;
@@ -13,9 +14,10 @@ import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
 @Path("/base")
+@ValidateModel
 public abstract class BaseController<D extends BaseEntity<K>, K> {
 
-  protected abstract BaseServiceImpl<D, ?, K> getService();
+  protected abstract IGenericCrudService<D, K> getService();
 
   @GET
   @Path("/{id}")
@@ -34,7 +36,7 @@ public abstract class BaseController<D extends BaseEntity<K>, K> {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<D> save(D dto) {
-    return getService().save(dto);
+    return getService().create(dto);
   }
 
   @PUT

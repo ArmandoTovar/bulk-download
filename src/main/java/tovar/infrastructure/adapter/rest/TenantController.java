@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 
 @Path("/tenants")
 @Produces(MediaType.APPLICATION_JSON)
+@ValidateModel
 @ApplicationScoped
 public class TenantController extends BaseController<Tenant, Long> {
 

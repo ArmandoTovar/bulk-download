@@ -5,7 +5,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import tovar.domain.model.base.BaseEntity;
 import tovar.domain.service.IGenericCrudService;
-import tovar.infrastructure.adapter.persistence.BaseServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

@@ -42,8 +42,8 @@ public class NotificationEventHandler implements DomainEventSubscriber {
   private Uni<String> getUserEmail(UUID reportId) {
     return reportRepository.getById(reportId)
         .map(report -> {
-          if (report.isPresent() && report.get().getUser() != null) {
-            return report.get().getUser().getEmail();
+          if (report.isPresent() && report.get().getUserId() != null) {
+            return report.get().getUserId().toString();
           }
           throw new IllegalArgumentException(
               String.format("Report number %s doesn't have a user with an assosiated email", reportId));

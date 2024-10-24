@@ -16,14 +16,15 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, UserEntity, UUI
 
   @Override
   protected User toDTO(UserEntity entity) {
-    return User.builder().name(entity.getName()).email(entity.getEmail()).tenant(entity.getTenant()).id(entity.getId())
+    return User.builder().name(entity.getName()).email(entity.getEmail()).tenantId(entity.getTenant().getId())
+        .id(entity.getId())
         .build();
   }
 
   @Override
   protected UserEntity toEntity(User dto) {
     return UserEntity.builder().name(dto.getName()).email(dto.getEmail())
-        .tenant(TenantEntity.builder().name(dto.getTenant().getName()).id(dto.getTenant().getId()).build())
+        .tenant(TenantEntity.builder().id(dto.getTenantId()).build())
         .id(dto.getId())
         .build();
   }

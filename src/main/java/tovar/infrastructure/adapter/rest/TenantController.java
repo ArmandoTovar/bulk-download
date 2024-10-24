@@ -4,8 +4,9 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import tovar.domain.model.base.Tenant;
-import tovar.infrastructure.adapter.persistence.BaseServiceImpl;
-import tovar.infrastructure.adapter.persistence.TenantService;
+import tovar.domain.service.IGenericCrudService;
+import tovar.infrastructure.adapter.services.TenantServiceImpl;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -16,10 +17,11 @@ import jakarta.inject.Inject;
 public class TenantController extends BaseController<Tenant, Long> {
 
   @Inject
-  private TenantService tenantService;
+  private TenantServiceImpl tenantService;
 
   @Override
-  protected BaseServiceImpl<Tenant, ?, Long> getService() {
+  protected IGenericCrudService<Tenant, Long> getService() {
     return tenantService;
   }
+
 }

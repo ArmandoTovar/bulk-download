@@ -17,11 +17,11 @@ public abstract class UserCrudService extends GenericCrudService<User, UUID> {
 
   @Override
   public Uni<User> create(User entity) {
-    return getTenantRepository().getById(entity.getTenant().getId())
+    return getTenantRepository().getById(entity.getTenantId())
         .onItem().transformToUni(optionalTenant -> {
           if (optionalTenant.isEmpty()) {
             return Uni.createFrom().failure(new ValidationException(
-                List.of(String.format("Tenant ID %s doesn't exist", entity.getTenant().getId())),
+                List.of(String.format("Tenant ID %s doesn't exist", entity.getTenantId())),
                 UUID.randomUUID().toString()));
           }
           return super.create(entity);

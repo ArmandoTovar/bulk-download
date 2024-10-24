@@ -1,7 +1,8 @@
-package tovar.infrastructure.adapter.persistence;
+package tovar.infrastructure.adapter.services;
 
 import java.util.UUID;
 
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import tovar.application.service.UserCrudService;
@@ -14,7 +15,8 @@ import tovar.infrastructure.persistent.repositories.TenantRepositoryImpl;
 import tovar.infrastructure.persistent.repositories.UserRepositoryImpl;
 
 @ApplicationScoped
-public class UserService extends UserCrudService {
+@WithSession
+public class UserServiceImpl extends UserCrudService {
 
   @Inject
   private TenantRepositoryImpl tenantRepository;

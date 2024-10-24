@@ -1,14 +1,17 @@
-package tovar.infrastructure.adapter.persistence;
+package tovar.infrastructure.adapter.services;
 
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import tovar.application.service.TenantCrudService;
 import tovar.domain.model.base.Tenant;
 import tovar.infrastructure.persistent.entities.TenantEntity;
 import tovar.infrastructure.persistent.repositories.BaseRepositoryImpl;
 import tovar.infrastructure.persistent.repositories.TenantRepositoryImpl;
 
 @ApplicationScoped
-public class TenantService extends BaseServiceImpl<Tenant, TenantEntity, Long> {
+@WithSession
+public class TenantServiceImpl extends TenantCrudService {
 
   @Inject
   private TenantRepositoryImpl tenantRepository;

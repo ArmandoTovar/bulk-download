@@ -3,26 +3,26 @@ package tovar.infrastructure.adapter.rest;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import tovar.domain.model.base.User;
+import tovar.domain.model.report.Report;
 import tovar.domain.service.IGenericCrudService;
-import tovar.infrastructure.adapter.services.UserServiceImpl;
-
+import tovar.infrastructure.adapter.services.ReportServiceImpl;
 import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-@Path("/users")
-@ApplicationScoped
+@Path("/reports")
 @Produces(MediaType.APPLICATION_JSON)
-public class UserController extends BaseController<User, UUID> {
+@ValidateModel
+@ApplicationScoped
+public class ReportController extends BaseController<Report, UUID> {
 
   @Inject
-  private UserServiceImpl userService;
+  private ReportServiceImpl reportService;
 
   @Override
-  protected IGenericCrudService<User, UUID> getService() {
-    return userService;
+  protected IGenericCrudService<Report, UUID> getService() {
+    return reportService;
   }
 
 }

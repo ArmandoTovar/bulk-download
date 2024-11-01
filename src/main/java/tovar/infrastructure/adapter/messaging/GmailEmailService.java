@@ -1,7 +1,8 @@
 package tovar.infrastructure.adapter.messaging;
 
 import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
+import io.quarkus.mailer.reactive.ReactiveMailer;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import tovar.application.service.email.AbstractEmailService;
@@ -10,7 +11,7 @@ import tovar.domain.model.email.EmailData;
 @ApplicationScoped
 public class GmailEmailService extends AbstractEmailService {
   @Inject
-  Mailer mailer;
+  ReactiveMailer reactiveMailer;
 
   @Override
   protected void buildMessage(EmailData emailData) {
@@ -19,12 +20,8 @@ public class GmailEmailService extends AbstractEmailService {
   }
 
   @Override
-  protected void send(EmailData emailData) {
-    try {
-      mailer.send(Mail.withHtml(emailData.getTo(), emailData.getSubject(), emailData.getBody()));
-    } catch (Exception e) {
-      throw new RuntimeException("Error enviando el correo con Gmail: " + e.getMessage(), e);
-    }
+  public Uni<Void> send(EmailData emailData) {
+    return reactiveMailer.send(Mail.withHtml(emailData.getTo(), emailData.getSubject(), emailData.getBody()));
   }
 
 }

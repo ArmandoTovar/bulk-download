@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.agroal.api.AgroalDataSource;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import tovar.infrastructure.persistent.entities.ReportEntity;

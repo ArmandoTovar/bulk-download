@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import io.agroal.api.AgroalDataSource;
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import tovar.domain.model.download.Download;
@@ -16,6 +18,8 @@ import tovar.infrastructure.persistent.entities.DownloadEntity;
 import tovar.infrastructure.persistent.entities.ReportEntity;
 
 @ApplicationScoped
+@WithSession
+@WithTransaction
 public class DownloadRepositoryImpl extends BaseRepositoryImpl<Download, DownloadEntity, UUID> {
 
   @Inject

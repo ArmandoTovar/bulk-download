@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -26,6 +28,10 @@ public class QueryJob implements Job {
   @Inject
   private DownloadRepositoryImpl downloadRepository;
 
+  @Inject
+  @Channel("generated-report")
+  Emitter<String> quoteRequestEmitter;
+
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     String downloadId = context.getJobDetail().getJobDataMap().getString("downloadId");
@@ -40,9 +46,9 @@ public class QueryJob implements Job {
       File f = reportService.generateReport(download.getReportId());
       download.setStatus(DownloadStatus.COMPLETED);
       download.setRetryCount(0);
+      quoteRequestEmitter.send(download.getReportId().toString());
     } catch (Exception e) {
       e.printStackTrace();
-      ;
       download.setStatus(DownloadStatus.FAILED);
       download.setRetryCount(download.getRetryCount() + 1);
     } finally {

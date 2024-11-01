@@ -1,37 +1,44 @@
 package tovar.infrastructure.persistent.repositories;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.hibernate.reactive.mutiny.Mutiny.SessionFactory;
-
-import io.quarkus.hibernate.reactive.panache.common.WithSession;
-import io.smallrye.mutiny.Uni;
+import io.agroal.api.AgroalDataSource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.Tuple;
 import tovar.domain.repository.SqlReportSourceRepository;
 
 @ApplicationScoped
 public class SqlReportSourceRepositoryImpl extends SqlReportSourceRepository {
-
   @Inject
-  SessionFactory sessionFactory;
+  AgroalDataSource dataSource;
 
   @Override
-  public Uni<List<Map<String, Object>>> execute(String query) {
-    return sessionFactory.withSession(session -> session.createNativeQuery(query, Tuple.class).getResultList()
-        .onItem().transform(tuples -> tuples.stream()
-            .map(this::tupleToMap)
-            .collect(Collectors.toList())));
+  public List<Map<String, Object>> execute(String query) {
+    List<Map<String, Object>> resultList = new ArrayList<>();
+    try (Connection conn = dataSource.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery()) {
+      int columnCount = rs.getMetaData().getColumnCount();
+      List<String> columnNames = new ArrayList<>();
+      for (int i = 1; i <= columnCount; i++) {
+        columnNames.add(rs.getMetaData().getColumnName(i));
+      }
+      while (rs.next()) {
+        Map<String, Object> row = new HashMap<>();
+        for (String columnName : columnNames) {
+          row.put(columnName, rs.getObject(columnName));
+        }
+        resultList.add(row);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return resultList;
   }
-
-  private Map<String, Object> tupleToMap(Tuple tuple) {
-    return tuple.getElements().stream()
-        .collect(Collectors.toMap(
-            element -> element.getAlias(),
-            element -> tuple.get(element.getAlias())));
-  }
-
 }

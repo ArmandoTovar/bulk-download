@@ -1,6 +1,7 @@
 package tovar.application.service;
 
 import java.io.File;
+import java.lang.Character.Subset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,8 +47,12 @@ public abstract class ReportCrudService extends GenericCrudService<Report, UUID>
         });
   }
 
-  public Uni<File> generateReport(Report report) {
-    return getReportSourceRepository().getData(report).map(data -> generateReport(report, data));
+  public File generateReport(UUID reportId) {
+    Optional<Report> optionalReport = getReportByIdNonReactive(reportId);
+    if (optionalReport.isEmpty())
+      return null;
+    var data = getReportSourceRepository().getData(optionalReport.get());
+    return generateReport(optionalReport.get(), data);
   }
 
   private File generateReport(Report report, List<Map<String, Object>> data) {

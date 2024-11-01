@@ -1,5 +1,6 @@
 package tovar.infrastructure.adapter.services;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
@@ -54,11 +55,8 @@ public class ReportServiceImpl extends ReportCrudService {
   }
 
   @Override
-  public Uni<Report> create(Report entity) {
-    return super.create(entity).onItem()
-        .invoke(r -> Uni.createFrom().voidItem().invoke(() -> generateReport(entity)).subscribe().with(unused -> {
-          System.out.println("termine");
-        }));
+  public Optional<Report> getReportByIdNonReactive(UUID id) {
+    return reportRepository.getReportByIdNonReactive(id);
   }
 
 }

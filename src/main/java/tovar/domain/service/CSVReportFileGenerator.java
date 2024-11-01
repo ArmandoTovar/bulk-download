@@ -12,6 +12,7 @@ public class CSVReportFileGenerator implements ReportFileGenerator {
   @Override
   public File generateFile(Report report, List<Map<String, Object>> data) {
     return new File("report.csv");
+
   }
 
 }

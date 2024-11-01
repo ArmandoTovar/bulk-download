@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.smallrye.mutiny.Uni;
 import tovar.domain.model.report.FilterReport;
 import tovar.domain.model.report.Report;
 import tovar.domain.model.report.ReportConfiguration;
@@ -13,12 +12,12 @@ import tovar.domain.model.report.specification.ReportSpecification;
 
 public abstract class SqlReportSourceRepository implements ReportSourceRepository {
   @Override
-  public Uni<List<Map<String, Object>>> getData(Report report) {
-    return buildSqlQuery(report).flatMap(
-        queryStr -> execute(queryStr));
+  public List<Map<String, Object>> getData(Report report) {
+    String query = buildSqlQuery(report);
+    return execute(query);
   }
 
-  private Uni<String> buildSqlQuery(Report report) {
+  private String buildSqlQuery(Report report) {
     ReportConfiguration reportConfiguration = report.getReportConfiguration();
     StringBuilder query = new StringBuilder("SELECT ");
     if (reportConfiguration.getSelectedColumn() != null && !reportConfiguration.getSelectedColumn().isEmpty()) {
@@ -39,8 +38,8 @@ public abstract class SqlReportSourceRepository implements ReportSourceRepositor
     }
 
     System.out.println(query.toString());
-    return Uni.createFrom().item(query.toString());
+    return query.toString();
   }
 
-  public abstract Uni<List<Map<String, Object>>> execute(String query);
+  public abstract List<Map<String, Object>> execute(String query);
 }

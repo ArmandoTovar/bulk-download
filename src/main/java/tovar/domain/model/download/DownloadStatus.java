@@ -1,6 +1,6 @@
 package tovar.domain.model.download;
 
-public enum DownloadState {
+public enum DownloadStatus {
   PENDING,
   PROCESSING,
   COMPLETED,

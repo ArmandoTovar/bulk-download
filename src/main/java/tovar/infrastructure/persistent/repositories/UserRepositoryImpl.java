@@ -2,6 +2,7 @@ package tovar.infrastructure.persistent.repositories;
 
 import java.util.UUID;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import tovar.domain.model.base.User;
 import tovar.infrastructure.persistent.entities.TenantEntity;
@@ -22,11 +23,14 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, UserEntity, UUI
   }
 
   @Override
-  protected UserEntity toEntity(User dto) {
-    return UserEntity.builder().name(dto.getName()).email(dto.getEmail())
-        .tenant(TenantEntity.builder().id(dto.getTenantId()).build())
-        .id(dto.getId())
-        .build();
+  protected Uni<UserEntity> toEntity(User dto) {
+    return findById(dto.getId()).onItem().ifNull().continueWith(UserEntity.builder().build()).map(entity -> {
+      entity.setTenant(TenantEntity.builder().id(dto.getTenantId()).build());
+      entity.setName(dto.getName());
+      entity.setEmail(dto.getEmail());
+      entity.setId(dto.getId());
+      return entity;
+    });
   }
 
 }

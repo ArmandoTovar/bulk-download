@@ -2,6 +2,7 @@ package tovar.application.service;
 
 import java.io.File;
 import java.lang.Character.Subset;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,12 +48,20 @@ public abstract class ReportCrudService extends GenericCrudService<Report, UUID>
         });
   }
 
-  public File generateReport(UUID reportId) {
-    Optional<Report> optionalReport = getReportByIdNonReactive(reportId);
-    if (optionalReport.isEmpty())
-      return null;
-    var data = getReportSourceRepository().getData(optionalReport.get());
-    return generateReport(optionalReport.get(), data);
+  public Uni<File> generateReportReactive(UUID reportId) {
+    return getRepository().getById(reportId).onItem().ifNotNull().transformToUni(optReport -> {
+      if (optReport.isEmpty()) {
+        return Uni.createFrom().failure(new ValidationException(
+            List.of(String.format("Report ID %s doesn't exist", reportId)),
+            UUID.randomUUID().toString()));
+      }
+      Report report = optReport.get();
+      var data = getReportSourceRepository().getData(report);
+      report.setExecuted(report.getExecuted() + 1);
+      report.setLastDownload(LocalDateTime.now());
+      return getRepository().update(report)
+          .flatMap(updateReport -> Uni.createFrom().item(generateReport(updateReport, data)));
+    });
   }
 
   private File generateReport(Report report, List<Map<String, Object>> data) {

@@ -1,6 +1,7 @@
 package tovar.domain.model.report;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -30,5 +31,13 @@ public class Report extends AuditableEntity<UUID> {
   private ReportState reportState;
   private ReportConfiguration reportConfiguration;
   private LocalDateTime lastDownload;
+  private int executed;
 
+  public String getFileNameGenerated() {
+    if (lastDownload == null) {
+      lastDownload = LocalDateTime.now();
+    }
+    return String.format("%s_%s_%s(%s).%s", tenantId, frecuencyType.toString(),
+        lastDownload.format(DateTimeFormatter.ofPattern("yyyymmdd")), executed, reportFormat.toString()).toLowerCase();
+  }
 }

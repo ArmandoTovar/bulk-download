@@ -1,10 +1,8 @@
 package tovar.infrastructure.adapter.services;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
-import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import tovar.application.service.ReportCrudService;
@@ -52,11 +50,6 @@ public class ReportServiceImpl extends ReportCrudService {
   @Override
   protected ReportSourceRepository getReportSourceRepository() {
     return reportSourceRepository;
-  }
-
-  @Override
-  public Optional<Report> getReportByIdNonReactive(UUID id) {
-    return reportRepository.getReportByIdNonReactive(id);
   }
 
 }

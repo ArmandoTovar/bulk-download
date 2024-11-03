@@ -67,7 +67,8 @@ public class ReportEntity extends AuditableEntity {
   private ReportConfiguration reportConfiguration;
 
   private LocalDateTime lastDownload;
-
+  @Column(columnDefinition = "integer default 0")
+  private int executed;
   @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<DownloadEntity> downloads;
 }

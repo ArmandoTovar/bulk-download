@@ -1,6 +1,7 @@
 package tovar.infrastructure.persistent.repositories;
 
 import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
 import io.smallrye.mutiny.Uni;
 import tovar.domain.model.base.BaseEntity;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class BaseRepositoryImpl<T extends BaseEntity<K>, E, K>
+public abstract class BaseRepositoryImpl<T extends BaseEntity<K>, E extends PanacheEntityBase, K>
     implements IGenericRepository<T, K>, PanacheRepositoryBase<E, K> {
 
   private final Class<E> entityClass;
@@ -21,7 +22,7 @@ public abstract class BaseRepositoryImpl<T extends BaseEntity<K>, E, K>
 
   protected abstract T toDTO(E entity);
 
-  protected abstract E toEntity(T dto);
+  protected abstract Uni<E> toEntity(T dto);
 
   public Uni<Optional<T>> getById(K id) {
     return Panache.withTransaction(() -> findById(id))
@@ -36,13 +37,13 @@ public abstract class BaseRepositoryImpl<T extends BaseEntity<K>, E, K>
   }
 
   public Uni<T> save(T dto) {
-    E entity = toEntity(dto);
-    return Panache.withTransaction(() -> persist(entity))
-        .map(v -> toDTO(entity));
+    return toEntity(dto).map(entity -> Panache.withTransaction(() -> persist(entity)))
+        .flatMap(saveEntity -> saveEntity.map(this::toDTO));
   }
 
   public Uni<T> update(T dto) {
-    return save(dto);
+    return toEntity(dto).map(entity -> Panache.withTransaction(() -> persistAndFlush(entity)))
+        .flatMap(saveEntity -> saveEntity.map(this::toDTO));
   }
 
   public Uni<Void> removeAll(List<T> dtos) {

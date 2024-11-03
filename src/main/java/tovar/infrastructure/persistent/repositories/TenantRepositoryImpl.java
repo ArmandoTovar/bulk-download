@@ -1,5 +1,6 @@
 package tovar.infrastructure.persistent.repositories;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import tovar.domain.model.base.Tenant;
 import tovar.infrastructure.persistent.entities.TenantEntity;
@@ -16,8 +17,12 @@ public class TenantRepositoryImpl extends BaseRepositoryImpl<Tenant, TenantEntit
   }
 
   @Override
-  protected TenantEntity toEntity(Tenant dto) {
-    return TenantEntity.builder().id(dto.getId()).name(dto.getName()).build();
+  protected Uni<TenantEntity> toEntity(Tenant dto) {
+    return findById(dto.getId()).onItem().ifNull().continueWith(TenantEntity.builder().build()).map(entity -> {
+      entity.setName(dto.getName());
+      entity.setId(dto.getId());
+      return entity;
+    });
   }
 
 }

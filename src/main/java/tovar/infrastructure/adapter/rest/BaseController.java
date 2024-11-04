@@ -12,7 +12,6 @@ import java.util.Optional;
 import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
-@Path("/base")
 @ValidateModel
 public abstract class BaseController<D extends BaseEntity<K>, K> {
 
@@ -39,9 +38,10 @@ public abstract class BaseController<D extends BaseEntity<K>, K> {
   }
 
   @PUT
+  @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Uni<D> update(D dto) {
+  public Uni<D> update(@PathParam("id") K id, D dto) {
     return getService().update(dto);
   }
 

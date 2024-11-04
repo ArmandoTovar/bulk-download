@@ -20,7 +20,7 @@ public class GmailEmailService extends AbstractEmailService {
   }
 
   @Override
-  public Uni<Void> send(EmailData emailData) {
+  public Uni<Void> sendProcess(EmailData emailData) {
     return reactiveMailer.send(Mail.withHtml(emailData.getTo(), emailData.getSubject(), emailData.getBody()));
   }
 

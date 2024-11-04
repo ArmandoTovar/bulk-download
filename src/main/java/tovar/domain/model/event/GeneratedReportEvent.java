@@ -10,5 +10,6 @@ import lombok.Getter;
 public class GeneratedReportEvent extends DomainEvent {
   private UUID reportId;
   private String message;
+  private String pathFile;
 
 }

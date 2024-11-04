@@ -35,7 +35,8 @@ public abstract class NotificationEventHandler implements DomainEventSubscriber 
                     .body("Your report has been generated and it's ready for download")
                     .build()))
             .subscribe().with(
-                success -> System.out.println("Mensaje enviado"),
+                success -> {
+                },
                 error -> log.error("Failed to send email: " + error.getMessage()));
       });
     }

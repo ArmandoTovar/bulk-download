@@ -18,6 +18,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import tovar.domain.model.download.Download;
 import tovar.domain.model.download.DownloadStatus;
+import tovar.domain.model.event.GeneratedReportEvent;
 import tovar.infrastructure.adapter.services.ReportServiceImpl;
 import tovar.infrastructure.persistent.repositories.DownloadRepositoryImpl;
 
@@ -33,7 +34,7 @@ public class QueryJob implements Job {
 
   @Inject
   @Channel("generated-report")
-  Emitter<String> quoteRequestEmitter;
+  Emitter<GeneratedReportEvent> quoteRequestEmitter;
 
   @Inject
   @Channel("generating-report")
@@ -62,7 +63,8 @@ public class QueryJob implements Job {
                       .onItem().invoke(file -> {
                         download.setStatus(DownloadStatus.COMPLETED);
                         download.setRetryCount(0);
-                        quoteRequestEmitter.send(download.getReportId().toString());
+                        quoteRequestEmitter.send(
+                            new GeneratedReportEvent(download.getReportId(), "generated", file.getPath()));
                       })
                       .onFailure(Exception.class).invoke(error -> {
                         error.printStackTrace();

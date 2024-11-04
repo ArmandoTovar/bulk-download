@@ -11,11 +11,14 @@ public abstract class AbstractEmailService implements IEmailStrategy {
 
   public static final Logger log = LoggerFactory.getLogger(AbstractEmailService.class);
 
-  public void sentEmailWithTemplate(EmailData emailData) {
-    checkDestination(emailData.getTo());
-    buildMessage(emailData);
-    send(emailData);
-    tracer(emailData);
+  @Override
+  public Uni<Void> send(EmailData emailData) {
+
+    return Uni.createFrom().voidItem()
+        .invoke(() -> checkDestination(emailData.getTo()))
+        .invoke(() -> buildMessage(emailData))
+        .chain(() -> sendProcess(emailData))
+        .invoke(() -> tracer(emailData));
   }
 
   protected abstract void buildMessage(EmailData emailData);
@@ -25,7 +28,7 @@ public abstract class AbstractEmailService implements IEmailStrategy {
       throw new IllegalArgumentException("Invalid email address");
   }
 
-  public abstract Uni<Void> send(EmailData emailData);
+  public abstract Uni<Void> sendProcess(EmailData emailData);
 
   protected void tracer(EmailData emailData) {
     log.info(String.format("Email sended to %s", emailData.getTo()));

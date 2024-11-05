@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import tovar.domain.model.validator.HiddenColumn;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -19,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User extends AuditableEntity<UUID> {
 
+  @HiddenColumn
   private String name;
   private String email;
   @JsonAlias(value = { "tenant_id", "tenantId" })

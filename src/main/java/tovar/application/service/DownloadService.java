@@ -7,6 +7,7 @@ import io.smallrye.mutiny.Uni;
 import lombok.AllArgsConstructor;
 import tovar.domain.model.download.Download;
 import tovar.domain.model.download.DownloadStatus;
+import tovar.domain.model.report.Report;
 import tovar.domain.model.validator.ValidationException;
 import tovar.domain.repository.IGenericRepository;
 import tovar.domain.service.IDownloadService;
@@ -17,6 +18,8 @@ public abstract class DownloadService extends GenericCrudService<Download, UUID>
   protected abstract IGenericRepository<Download, UUID> getRepository();
 
   protected abstract ISchedulerService getSchedulerService();
+
+  protected abstract IGenericRepository<Report, UUID> getReportRepository();
 
   @Override
   public Uni<Void> executeTaskNow(UUID downloadId) {
@@ -50,11 +53,19 @@ public abstract class DownloadService extends GenericCrudService<Download, UUID>
   @Override
   public Uni<Download> create(Download download) {
     download.setStatus(DownloadStatus.PENDING);
-    return getRepository().save(download).onItem().invoke(newDownload -> {
-      getSchedulerService().schedulerJob(newDownload).subscribe().with(
-          unused -> System.out.println("Secondary operation completed successfully."),
-          failure -> System.err.println("Failed to complete secondary operation: " + failure));
-    });
+    return getReportRepository().getById(download.getReportId())
+        .onItem().transformToUni(optionalReport -> {
+          if (optionalReport.isEmpty()) {
+            return Uni.createFrom().failure(new ValidationException(
+                List.of(String.format("Report ID %s doesn't exist", download.getReportId())),
+                UUID.randomUUID().toString()));
+          }
+          return super.create(download);
+        }).onItem().invoke(newDownload -> {
+          getSchedulerService().schedulerJob(newDownload).subscribe().with(
+              unused -> System.out.println("Secondary operation completed successfully."),
+              failure -> System.err.println("Failed to complete secondary operation: " + failure));
+        });
   }
 
 }

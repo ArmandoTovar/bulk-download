@@ -6,6 +6,6 @@ import java.util.Map;
 public interface ReportSourceRepository {
   List<Map<String, Object>> getData(Report report);
 
-  List<Map<String, Object>> execute(String query);
+  List<Map<String, Object>> execute(String query, List<Object> parameters);
 
 }

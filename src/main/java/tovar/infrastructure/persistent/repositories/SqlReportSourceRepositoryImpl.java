@@ -3,6 +3,7 @@ package tovar.infrastructure.persistent.repositories;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,26 +20,48 @@ public class SqlReportSourceRepositoryImpl extends SqlReportSourceRepository {
   AgroalDataSource dataSource;
 
   @Override
-  public List<Map<String, Object>> execute(String query) {
-    List<Map<String, Object>> resultList = new ArrayList<>();
-    try (Connection conn = dataSource.getConnection();
-        PreparedStatement ps = conn.prepareStatement(query);
-        ResultSet rs = ps.executeQuery()) {
-      int columnCount = rs.getMetaData().getColumnCount();
-      List<String> columnNames = new ArrayList<>();
-      for (int i = 1; i <= columnCount; i++) {
-        columnNames.add(rs.getMetaData().getColumnName(i));
-      }
-      while (rs.next()) {
-        Map<String, Object> row = new HashMap<>();
-        for (String columnName : columnNames) {
-          row.put(columnName, rs.getObject(columnName));
+  public List<Map<String, Object>> execute(String query, List<Object> parameters) {
+    List<Map<String, Object>> results = new ArrayList<>();
+    try (Connection connection = dataSource.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+
+      int index = 1;
+      for (Object parameter : parameters) {
+        if (parameter instanceof String) {
+          statement.setString(index, (String) parameter);
+        } else if (parameter instanceof Integer) {
+          statement.setInt(index, (Integer) parameter);
+        } else if (parameter instanceof Long) {
+          statement.setLong(index, (Long) parameter);
+        } else if (parameter instanceof Double) {
+          statement.setDouble(index, (Double) parameter);
+        } else if (parameter instanceof Boolean) {
+          statement.setBoolean(index, (Boolean) parameter);
+        } else if (parameter == null) {
+          statement.setNull(index, java.sql.Types.NULL);
+        } else {
+          statement.setObject(index, parameter);
         }
-        resultList.add(row);
+        index++;
       }
+
+      ResultSet resultSet = statement.executeQuery();
+      ResultSetMetaData metaData = resultSet.getMetaData();
+      int columnCount = metaData.getColumnCount();
+
+      while (resultSet.next()) {
+        Map<String, Object> row = new HashMap<>();
+        for (int i = 1; i <= columnCount; i++) {
+          row.put(metaData.getColumnName(i), resultSet.getObject(i));
+        }
+        results.add(row);
+      }
+
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return resultList;
+
+    return results;
   }
+
 }

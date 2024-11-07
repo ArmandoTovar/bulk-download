@@ -1,6 +1,7 @@
 package tovar.domain.model.report.specification;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import tovar.domain.model.report.FilterReport;
@@ -17,7 +18,13 @@ public class NotIncludeSpecification implements ReportSpecification<FilterReport
 
   @Override
   public String toSql() {
-    String notInClause = String.join(", ", values.stream().map(Object::toString).toArray(String[]::new));
+    String notInClause = values.stream().map(v -> "?").collect(Collectors.joining(", "));
     return String.format("%s NOT IN (%s)", field, notInClause);
   }
+
+  @Override
+  public List<?> getValues() {
+    return values;
+  }
+
 }

@@ -1,5 +1,7 @@
 package tovar.domain.model.report.specification;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import tovar.domain.model.report.FilterReport;
 
@@ -15,6 +17,10 @@ public class ContainsSpecification implements ReportSpecification<FilterReport> 
 
   @Override
   public String toSql() {
-    return String.format("%s LIKE '%%%s%%'", field, value);
+    return String.format("%s LIKE ?", field);
+  }
+
+  public List<?> getValues() {
+    return List.of("%" + value + "%");
   }
 }

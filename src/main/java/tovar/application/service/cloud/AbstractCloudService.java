@@ -14,7 +14,6 @@ public abstract class AbstractCloudService implements ICloudStrategy {
 
   @Override
   public Uni<Void> upload(String pathFile) {
-    System.out.println("armandooooooooooooooo");
     return Uni.createFrom().voidItem()
         .invoke(() -> checkFile(pathFile))
         .chain(() -> uploadProcess(pathFile))

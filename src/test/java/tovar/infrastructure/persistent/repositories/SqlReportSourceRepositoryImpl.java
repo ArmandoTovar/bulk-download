@@ -12,7 +12,7 @@ import java.util.Map;
 import io.agroal.api.AgroalDataSource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import tovar.application.repository.SqlReportSourceRepository;
+import tovar.domain.repository.SqlReportSourceRepository;
 
 @ApplicationScoped
 public class SqlReportSourceRepositoryImpl extends SqlReportSourceRepository {

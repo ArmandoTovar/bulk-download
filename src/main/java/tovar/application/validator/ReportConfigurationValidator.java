@@ -1,4 +1,4 @@
-package tovar.domain.model.validator;
+package tovar.application.validator;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import tovar.domain.model.report.FilterReport;
+import tovar.domain.model.validator.HiddenColumn;
 
 public class ReportConfigurationValidator {
   public static boolean validateSelectedColumns(Class<?> clazz, List<String> selectedColums) {

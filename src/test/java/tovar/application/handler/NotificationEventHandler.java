@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.smallrye.mutiny.Uni;
-import io.vertx.core.Vertx;
 import tovar.domain.model.email.EmailData;
 import tovar.domain.model.event.DomainEvent;
 import tovar.domain.model.event.DomainEventSubscriber;
@@ -26,19 +25,17 @@ public abstract class NotificationEventHandler implements DomainEventSubscriber 
   public void handleEvent(DomainEvent event) {
     if (event instanceof GeneratedReportEvent) {
       GeneratedReportEvent reportEvent = (GeneratedReportEvent) event;
-      Vertx.currentContext().runOnContext(v -> {
-        getUserEmail(reportEvent.getReportId())
-            .onItem().transformToUni(userEmail -> getEmailService().send(
-                EmailData.builder()
-                    .to(userEmail)
-                    .subject("Generated Report")
-                    .body("Your report has been generated and it's ready for download")
-                    .build()))
-            .subscribe().with(
-                success -> {
-                },
-                error -> log.error("Failed to send email: " + error.getMessage()));
-      });
+      getUserEmail(reportEvent.getReportId())
+          .onItem().transformToUni(userEmail -> getEmailService().send(
+              EmailData.builder()
+                  .to(userEmail)
+                  .subject("Generated Report")
+                  .body("Your report has been generated and it's ready for download")
+                  .build()))
+          .subscribe().with(
+              success -> {
+              },
+              error -> log.error("Failed to send email: " + error.getMessage()));
     }
   }
 

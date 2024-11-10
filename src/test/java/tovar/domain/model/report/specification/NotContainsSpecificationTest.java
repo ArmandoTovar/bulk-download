@@ -4,39 +4,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import io.quarkus.test.junit.QuarkusTest;
+
+import lombok.AllArgsConstructor;
 import tovar.domain.model.report.FilterOperator;
 import tovar.domain.model.report.FilterReport;
 
-@QuarkusTest
-public class GreaterThanSpecificationTest {
+@AllArgsConstructor
+public class NotContainsSpecificationTest {
   static ReportSpecification<FilterReport> mockReportSpecification;
 
   @BeforeAll
   static void init() {
-    mockReportSpecification = new GreaterThanSpecification("field", 2);
+    mockReportSpecification = new NotContainsSpecification("field", "va");
   }
 
   @Test
   public void ItIsSatisfiedBy() {
-    FilterReport mockFilter = FilterReport.builder().field("field").value(3).filterOperator(FilterOperator.GREATER)
+    FilterReport mockFilter = FilterReport.builder().field("field").value("no")
+        .filterOperator(FilterOperator.NOT_CONTAINS)
         .build();
     assertTrue(mockReportSpecification.isSatisfiedBy(mockFilter), "Is SatifiedBy condition");
   }
 
   @Test
   public void ItIsNotSatisfiedBy() {
-    FilterReport mockFilter = FilterReport.builder().field("field").value(1).filterOperator(FilterOperator.GREATER)
+    FilterReport mockFilter = FilterReport.builder().field("field").value("value")
+        .filterOperator(FilterOperator.NOT_CONTAINS)
         .build();
     assertFalse(mockReportSpecification.isSatisfiedBy(mockFilter), "Is not SatifiedBy condition");
   }
 
   @Test
   public void ItToSql() {
-    assertEquals("field > ?", mockReportSpecification.toSql());
+    assertEquals("field NOT LIKE ?", mockReportSpecification.toSql());
+  }
+
+  @Test
+  public void ItValidGetValues() {
+    assertEquals(List.of("%va%"), mockReportSpecification.getValues());
   }
 
 }

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -37,6 +38,7 @@ public class S3CloudService extends AbstractCloudService {
   }
 
   @Override
+  @WithTransaction
   public Uni<Void> uploadProcess(String pathFile) {
     File file = new File(pathFile);
     return Uni.createFrom()

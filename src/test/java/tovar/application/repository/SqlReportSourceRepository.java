@@ -1,4 +1,4 @@
-package tovar.domain.repository;
+package tovar.application.repository;
 
 import java.util.ArrayList;
 import java.util.List;

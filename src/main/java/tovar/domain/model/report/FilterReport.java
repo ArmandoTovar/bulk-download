@@ -38,7 +38,7 @@ public class FilterReport {
       case LESS:
         return new LessThanSpecification(field, (String) value);
       default:
-        throw new IllegalArgumentException("Operator is not supported:" + filterOperator);
+        throw new IllegalArgumentException("Operator is not supported: " + filterOperator);
 
     }
   }

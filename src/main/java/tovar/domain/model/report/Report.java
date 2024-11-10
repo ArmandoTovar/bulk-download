@@ -38,6 +38,6 @@ public class Report extends AuditableEntity<UUID> {
       lastDownload = LocalDateTime.now();
     }
     return String.format("%s_%s_%s(%s).%s", tenantId, frecuencyType.toString(),
-        lastDownload.format(DateTimeFormatter.ofPattern("yyyymmdd")), executed, reportFormat.toString()).toLowerCase();
+        lastDownload.format(DateTimeFormatter.ofPattern("yyyyMMdd")), executed, reportFormat.toString()).toLowerCase();
   }
 }

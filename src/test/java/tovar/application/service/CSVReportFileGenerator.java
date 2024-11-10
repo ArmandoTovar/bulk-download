@@ -1,4 +1,4 @@
-package tovar.domain.service;
+package tovar.application.service;
 
 import java.io.File;
 import java.io.FileWriter;
